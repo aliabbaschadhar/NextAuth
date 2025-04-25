@@ -25,8 +25,8 @@ export default function Signup() {
                         [id]: value
                     })
                 }}
-
                 onClick={onSignup}
+                formData={user}
             />
         </div>
     )

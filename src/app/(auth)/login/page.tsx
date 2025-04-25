@@ -24,8 +24,8 @@ export default function Login() {
                         [id]: value
                     })
                 }}
-
                 onClick={onLogin}
+                formData={user}
             />
         </div>
     )

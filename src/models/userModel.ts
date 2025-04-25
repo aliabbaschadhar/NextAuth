@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, models } from 'mongoose';
 
 const userSchema = new Schema({
     username: {
@@ -35,7 +35,10 @@ const userSchema = new Schema({
     verifyTokenExpiry: Date,
 })
 
-const User = model("user", userSchema);
+const User = models.user || model("user", userSchema);
+//Why is this done?
+// Mongoose throws an OverwriteModelError if you try to define the same model multiple times on the same connection.
+// In development environments like Next.js with hot - reloading, the file defining the model might be executed again, leading to an attempt to redefine the "user" model.
 
 export {
     User,
