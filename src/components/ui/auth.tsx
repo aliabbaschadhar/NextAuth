@@ -5,7 +5,13 @@ import { Input } from "./input";
 import { Label } from "./label";
 import Link from "next/link";
 
-export function AuthCard({ type = 'Login', inputOnChange, onClick, formData }: {
+export function AuthCard({
+    type = 'Login',
+    inputOnChange,
+    onClick,
+    formData,
+    loading
+}: {
     type?: 'Login' | "Signup";
     inputOnChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onClick?: () => void;
@@ -13,7 +19,8 @@ export function AuthCard({ type = 'Login', inputOnChange, onClick, formData }: {
         email: string,
         password: string,
         username?: string
-    }
+    };
+    loading?: boolean;
 }) {
     const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
 
@@ -38,12 +45,16 @@ export function AuthCard({ type = 'Login', inputOnChange, onClick, formData }: {
             className="w-full max-w-md mx-auto p-6 shadow-xl text-white bg-zinc-900 border-zinc-700 rounded-lg"
         >
             <CardHeader className="text-center">
-                <CardTitle className="text-2xl font-bold">
-                    {type === "Login" ? "Welcome Back" : "Create an Account"}
-                </CardTitle>
-                <CardDescription className="text-zinc-400 pt-2">
-                    {type === "Login" ? "Sign in to continue." : "Enter your details to sign up."}
-                </CardDescription>
+                {loading ? <h1>Processing....</h1> : (
+                    <div>
+                        <CardTitle className="text-2xl font-bold">
+                            {type === "Login" ? "Welcome Back" : "Create an Account"}
+                        </CardTitle>
+                        <CardDescription className="text-zinc-400 pt-2">
+                            {type === "Login" ? "Sign in to continue." : "Enter your details to sign up."}
+                        </CardDescription>
+                    </div>
+                )}
             </CardHeader>
 
             <CardContent className="space-y-6">

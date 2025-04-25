@@ -2,7 +2,13 @@ import mongoose from "mongoose";
 
 export async function connect() {
     try {
-        await mongoose.connect(process.env.MONGO_URL as string);
+        const { MONGO_URL } = process.env;
+        if (!MONGO_URL) {
+            throw new Error("MongoDB connection string is not defined in .env file");
+        }
+        console.log("Connecting to MongoDB...");
+
+        await mongoose.connect(MONGO_URL,);
         const connection = mongoose.connection;
 
         connection.on("connected", () => {
