@@ -28,14 +28,13 @@ export default function Profile() {
                 setUser(response.data.user);
             } catch (error) {
                 toast.error("Failed to fetch user data");
-                router.push("/login");
+                // router.push("/login");
             } finally {
                 setLoading(false);
             }
         };
-
         fetchUser();
-    }, [router]);
+    }, []);
 
     const logout = async () => {
         try {
@@ -79,7 +78,7 @@ export default function Profile() {
                         <p className="text-gray-300 mt-2">
                             Email: {user.email}
                         </p>
-                        <p className="text-gray-300 mt-2">
+                        <p className="text-gray-300 mt-2">]
                             Verified: {user.emailVerified ? 'Yes' : 'No'}
                         </p>
                         <p className="text-gray-300 mt-2">
