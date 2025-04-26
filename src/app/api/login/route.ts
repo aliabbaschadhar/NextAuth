@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { User } from "@/models/userModel";
 import { connect } from "@/dbConfig/dbConfig";
 import jwt from "jsonwebtoken";
+import { EmailType, sendEmail } from "@/helpers/mailer";
 
 
 connect();
@@ -44,6 +45,12 @@ export async function POST(req: NextRequest) {
 
         response.cookies.set("token", token, {
             httpOnly: true // Make sure to set the cookie as httpOnly which means it can't be accessed by client-side JavaScript
+        })
+
+        await sendEmail({
+            email,
+            emailType: EmailType.VERIFY,
+            userId: user._id
         })
 
         return response;
