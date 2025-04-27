@@ -15,8 +15,9 @@ export enum EmailType {
 export const sendEmail = async ({ email, emailType, userId }: any) => {
     try {
         const hashedToken = await bcrypt.hash(userId.toString(), 5);
+        const { VERIFY, RESET } = EmailType;
 
-        if (emailType === EmailType.VERIFY) {
+        if (emailType === VERIFY) {
             await User.findByIdAndUpdate(userId,
                 {
                     verifyToken: hashedToken,
@@ -42,18 +43,28 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
             }
         });
 
+        const verifyUrl = `${process.env.DOMAIN}/verifyemail?token=${hashedToken}`;
+        const resetUrl = `${process.env.DOMAIN}/forgetpassword?token=${hashedToken}`;
+        const actionUrl = emailType === VERIFY ? verifyUrl : resetUrl;
+
         const mailOptions = {
             from: "try.aliabbaschadhar@gmail.com",
             to: email,
-            subject: emailType === EmailType.VERIFY ? "Verify your email" : "Reset your password",
-            html: `<p>Click <a href="${process.env.DOMAIN}/verifyemail?token=${hashedToken}">here</a> to ${emailType === EmailType.VERIFY ? "verify your email" : "reset your password"}
-                or copy and paste the link below in your browser: <br />
-                <a href="${process.env.DOMAIN}/verifyemail?token=${hashedToken}">${process.env.DOMAIN}/verifyemail?token=${hashedToken}</a>
-                <br />
-                <br />
+            subject: emailType === VERIFY ? "Verify your email" : "Reset your password",
+            html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2>${emailType === VERIFY ? "Email Verification" : "Password Reset"}</h2>
+                <p>
+                Click <a href="${actionUrl}">${emailType === VERIFY ? "verify your email" : "reset your password"}</a> 
+                or copy and paste the link below in your browser:
+                </p>
+                <p style="background-color: #f5f5f5; padding: 10px; border-radius: 4px;">
+                <a href="${actionUrl}">${actionUrl}</a>
+                </p>
                 <p>If you did not request this, please ignore this email.</p>
                 <p>Thank you!</p>
-            </p>`
+            </div>
+            `
         }
 
         const mailresponse = await transport.sendMail(mailOptions);
