@@ -15,16 +15,21 @@ export enum EmailType {
 export const sendEmail = async ({ email, emailType, userId }: any) => {
     try {
         const hashedToken = await bcrypt.hash(userId.toString(), 5);
+
         if (emailType === EmailType.VERIFY) {
-            await User.findByIdAndUpdate(userId, {
-                verifyToken: hashedToken,
-                verifyTokenExpiry: Date.now() + 3600000
-            })
+            await User.findByIdAndUpdate(userId,
+                {
+                    verifyToken: hashedToken,
+                    verifyTokenExpiry: Date.now() + 3600000
+                }
+            )
         } else if (emailType === EmailType.RESET) {
-            await User.findByIdAndUpdate(userId, {
-                forgotPasswordToken: hashedToken,
-                forgotPasswordTokenExpiry: Date.now() + 3600000
-            })
+            await User.findByIdAndUpdate(userId,
+                {
+                    forgotPasswordToken: hashedToken,
+                    forgotPasswordTokenExpiry: Date.now() + 3600000
+                }
+            )
         }
 
         // Looking to send emails in production? Check out our Email API/SMTP product!

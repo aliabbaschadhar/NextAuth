@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// This function can be marked 'async' if using 'await' inside
+// We have two kinds of paths: public paths and private paths
+// Public paths: Routes accessible to everyone without requiring authentication tokens (e.g., signup, login)
+// Private paths: Routes accessible only to authenticated users who have valid tokens (e.g., profile, dashboard)
 
 export function middleware(request: NextRequest) {
-    // We have two kind of paths public paths and private paths
-    // public paths===> Public paths are those paths which are accessible to those who has token like signup and login
-    // private paths ===> private paths are those paths which are accessible to those who don't have token like /profile etc etc
-
     const path = request.nextUrl.pathname; // To access path and we don't need to make our middleware client side component
 
-    const isPublicPath = path === '/login' || path === '/signup'
+    const isPublicPath = path === '/login' || path === '/signup' || path === "/verifyemail"
 
     const token = request.cookies.get("token")?.value || '';
 
@@ -20,6 +18,8 @@ export function middleware(request: NextRequest) {
         // req.nextUrl ==> /profile 
     }
 
+    //If user is trying to access a private path and doesn't have a token, redirect them to the login page
+    // If user is trying to access a public path and has a token, redirect them to the profile page
     if (!isPublicPath && !token) {
         return NextResponse.redirect(new URL('/login', request.nextUrl))
     }
@@ -33,6 +33,7 @@ export const config = {
         '/',
         '/profile/:path*',
         '/login',
-        '/signup'
+        '/signup',
+        "/verifyemail",
     ]
 }
